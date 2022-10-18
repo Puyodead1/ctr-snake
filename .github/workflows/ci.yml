@@ -28,6 +28,7 @@ jobs:
       run: |
         sudo dkp-pacman -Syyu --noconfirm 3ds-dev
         sudo dkp-pacman -Scc --noconfirm
+        source /etc/profile.d/devkit-env.sh
     
     - name: Checkout
       uses: actions/checkout@v2
