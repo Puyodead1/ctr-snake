@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+    branches:
+    - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Update and Install Build Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y apt-utils
+        sudo apt-get install -y --no-install-recommends sudo ca-certificates pkg-config curl wget bzip2 xz-utils make git bsdtar doxygen gnupg
+        sudo apt-get clean
+
+    - name: Install devkitPro
+      run: |
+        wget https://apt.devkitpro.org/install-devkitpro-pacman
+        chmod +x ./install-devkitpro-pacman
+        sudo ./install-devkitpro-pacman
+        rm install-devkitpro-pacman
+
+    - name: Install Switch Toolchain
+      run: |
+        sudo dkp-pacman -Syyu --noconfirm 3ds-dev
+        sudo dkp-pacman -S --needed --noconfirm switch-jansson switch-curl switch-mbedtls switch-libjpeg-turbo switch-libpng switch-libwebp switch-sdl2 switch-sdl2_gfx switch-sdl2_image switch-sdl2_ttf switch-zlib
+        sudo dkp-pacman -Scc --noconfirm
+    
+    - name: Checkout
+      uses: actions/checkout@v2
+      
+    - name: Build
+      env:
+        DEVKITPRO: /opt/devkitpro
+      run: make
