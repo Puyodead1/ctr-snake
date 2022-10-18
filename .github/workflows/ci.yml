@@ -24,10 +24,9 @@ jobs:
         sudo ./install-devkitpro-pacman
         rm install-devkitpro-pacman
 
-    - name: Install Switch Toolchain
+    - name: Install 3DS Toolchain
       run: |
         sudo dkp-pacman -Syyu --noconfirm 3ds-dev
-        sudo dkp-pacman -S --needed --noconfirm switch-jansson switch-curl switch-mbedtls switch-libjpeg-turbo switch-libpng switch-libwebp switch-sdl2 switch-sdl2_gfx switch-sdl2_image switch-sdl2_ttf switch-zlib
         sudo dkp-pacman -Scc --noconfirm
     
     - name: Checkout
