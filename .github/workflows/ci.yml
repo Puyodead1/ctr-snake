@@ -14,7 +14,7 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y apt-utils
-        sudo apt-get install -y --no-install-recommends sudo ca-certificates pkg-config curl wget bzip2 xz-utils make git bsdtar doxygen gnupg
+        sudo apt-get install -y --no-install-recommends sudo ca-certificates pkg-config curl wget bzip2 xz-utils make git gnupg
         sudo apt-get clean
 
     - name: Install devkitPro
