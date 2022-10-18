@@ -35,5 +35,5 @@ jobs:
     - name: Build
       env:
         DEVKITPRO: /opt/devkitpro
-        DEVKITARM: /opt/devkitpro/devkitARM/bin
+        DEVKITARM: /opt/devkitpro/devkitARM
       run: make
