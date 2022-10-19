@@ -3,6 +3,7 @@
 #define GAME_H
 
 #include "common.h"
+#include <time.h>
 
 void gameInit();
 void gameRender();
@@ -13,5 +14,8 @@ void drawGrid();
 void drawGridUnit(int, int);
 void drawSnake();
 void drawGameOver();
+void drawFood();
+void randomFoodPos(int &x, int &y);
+void checkBounds();
 
 #endif

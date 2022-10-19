@@ -5,8 +5,8 @@ u32 COLOR_CLEAR = C2D_Color32(0xFF, 0xD8, 0xB0, 0x68);
 u32 COLOR_RED = C2D_Color32(0xFF, 0x00, 0x00, 0xFF);
 u32 kDownOld = 0;
 extern short sDirection;
+extern bool gameOver;
 int frame = 0;
-bool gameOver = false;
 
 void render(void)
 {
@@ -15,23 +15,12 @@ void render(void)
 	C2D_TargetClear(top, COLOR_CLEAR);
 	C2D_SceneBegin(top);
 	gameRender(); // call the render method in game.cpp, used for updating lerp
-	drawGrid();
-	drawSnake();
-	if (gameOver)
-	{
-		drawGameOver();
-	}
 	C3D_FrameEnd(0);
-}
-
-void sleep(int ms)
-{
-	while (ms--) gspWaitForVBlank();
 }
 
 int main(void)
 {
-	// Init Libs
+	// Initialize stuff
 	gfxInitDefault();
 	C3D_Init(C3D_DEFAULT_CMDBUF_SIZE);
 	C2D_Init(C2D_DEFAULT_MAX_OBJECTS);
