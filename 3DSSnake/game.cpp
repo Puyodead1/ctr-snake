@@ -1,16 +1,16 @@
 #include "game.h"
 
 int gridX, gridY;
-int posX = 20, posY = 20;
+int snakePos_X[SNAKE_MAX], snakePos_Y[SNAKE_MAX];
+int snakeSize = 5;
 int foodX, foodY;
-int score = 0;
-int highScore = 0;
-short sDirection = RIGHT;
+int score = 0, highScore = 0;
 bool gameOver = false;
 bool foodEaten = true;
 float lerpT = 0.7f; 
 float step = 0.05f; // lerp step, used for animating text in game over popup
 float width = 1.0f;
+short sDirection = RIGHT;
 
 C2D_Text text[2];
 C2D_TextBuf staticTextBuf, dynTextBuf;
@@ -18,10 +18,17 @@ C2D_TextBuf staticTextBuf, dynTextBuf;
 u32 MESSAGE_BOX_BG_COLOR = C2D_Color32(0xFF, 0xFF, 0xF1, 0xCC); // off-white
 u32 GRID_COLOR = C2D_Color32(0xFF, 0x00, 0x00, 0xFF); // red
 u32 SNAKE_COLOR = C2D_Color32(0x00, 0xFF, 0x00, 0xA5); // green
+u32 SNAKE_BODY_COLOR = C2D_Color32(0x00, 0xFF, 0x00, 0xA5); // green
 u32 FOOD_COLOR = C2D_Color32(0xFF, 0x00, 0x00, 0xA5);
 
 void gameInit()
 {
+	for (int i = 0; i < snakeSize; i++)
+	{
+		snakePos_X[i] = 200 / GRID_UNIT_SIZE;
+		snakePos_Y[i] = (120 - (GRID_UNIT_SIZE * i)) / GRID_UNIT_SIZE;
+	}
+
 	staticTextBuf = C2D_TextBufNew(4096);
 	dynTextBuf = C2D_TextBufNew(4096);
 
@@ -64,8 +71,11 @@ void gameReset()
 	step = 0.05f;
 
 	// reset snake position
-	posX = 20;
-	posY = 20;
+	for (int i = 0; i < snakeSize; i++)
+	{
+		snakePos_X[i] = 200 / GRID_UNIT_SIZE;
+		snakePos_Y[i] = (120 - (GRID_UNIT_SIZE * i)) / GRID_UNIT_SIZE;
+	}
 
 	gameOver = false;
 	sDirection = RIGHT;
@@ -104,16 +114,28 @@ void drawGridUnit(int x, int y)
 
 void drawSnake()
 {
-	if (sDirection == RIGHT)
-		posX++;
-	else if (sDirection == LEFT)
-		posX--;
-	else if (sDirection == UP)
-		posY--;
-	else if (sDirection == DOWN)
-		posY++;
+	if (!gameOver)
+		// move the snake only if the game is not over
+		for (int i = snakeSize - 1; i > 0; i--)
+		{
+			snakePos_X[i] = snakePos_X[i - 1];
+			snakePos_Y[i] = snakePos_Y[i - 1];
+		}
+	
 
-	C2D_DrawRectSolid(posX * GRID_UNIT_SIZE, posY * GRID_UNIT_SIZE, 0.0f, 10, 10, SNAKE_COLOR);
+	if (sDirection == RIGHT)
+		snakePos_X[0]++;
+	else if (sDirection == LEFT)
+		snakePos_X[0]--;
+	else if (sDirection == UP)
+		snakePos_Y[0]--;
+	else if (sDirection == DOWN)
+		snakePos_Y[0]++;
+
+	for (int i = 0; i < snakeSize; i++)
+	{
+		C2D_DrawRectSolid(snakePos_X[i] * GRID_UNIT_SIZE, snakePos_Y[i] * GRID_UNIT_SIZE, 0.0f, 10, 10, SNAKE_COLOR);
+	}
 }
 
 void drawGameOver()
@@ -171,14 +193,14 @@ void randomFoodPos(int& x, int& y)
 void checkBounds()
 {
 	// check if the snake has left the bounds of the screen
-	if (posX == 0 || posX == gridX - 1 || posY == 0 || posY == gridY - 1) 
+	if (snakePos_X[0] == 0 || snakePos_X[0] == gridX - 1 || snakePos_Y[0] == 0 || snakePos_Y[0] == gridY - 1)
 	{
 		gameOver = true;
 		if (score > highScore) highScore = score;
 	}
 
 	// check if the snake is overlapping the food
-	if (posX == foodX && posY == foodY)
+	if (snakePos_X[0] == foodX && snakePos_Y[0] == foodY)
 	{
 		foodEaten = true;
 		score++;

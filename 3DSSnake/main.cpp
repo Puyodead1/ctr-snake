@@ -6,7 +6,7 @@ u32 COLOR_RED = C2D_Color32(0xFF, 0x00, 0x00, 0xFF);
 u32 kDownOld = 0;
 extern short sDirection;
 extern bool gameOver;
-int frame = 0;
+int frameCount = 0;
 
 void render(void)
 {
@@ -70,10 +70,10 @@ int main(void)
 
 		kDownOld = kDown;
 
-		if(frame % FPS == 0)
+		if(frameCount % FPS == 0)
 			render();
 
-		frame++;
+		frameCount++;
 	}
 
 	gameExit();
