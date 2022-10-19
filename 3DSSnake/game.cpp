@@ -50,6 +50,7 @@ void gameReset()
 	posY = 20;
 
 	gameOver = false;
+	sDirection = RIGHT;
 }
 
 void initGrid(int x, int y)
@@ -95,7 +96,7 @@ void drawSnake()
 
 	C2D_DrawRectSolid(posX * GRID_UNIT_SIZE, posY * GRID_UNIT_SIZE, 0.0f, 10, 10, COLOR_RED);
 
-	if (posX == 0 || posX == gridX - 1 || posY == 0 || posY == gridY - 1)
+	if (posX == -1 || posX == gridX || posY == -1 || posY == gridY)
 		gameOver = true;
 }
 

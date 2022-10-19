@@ -59,14 +59,22 @@ int main(void)
 		if (kDown & KEY_START)
 			break; // break in order to return to hbmenu
 
-		if (kDown != kDownOld && !gameOver)
+		if (kDown != kDownOld)
 		{
-			if (kDown & KEY_RIGHT) sDirection = RIGHT;
-			if (kDown & KEY_LEFT) sDirection = LEFT;
-			if (kDown & KEY_UP) sDirection = UP;
-			if (kDown & KEY_DOWN) sDirection = DOWN;
+			if (!gameOver)
+			{
+				if (kDown & KEY_RIGHT) sDirection = RIGHT;
+				if (kDown & KEY_LEFT) sDirection = LEFT;
+				if (kDown & KEY_UP) sDirection = UP;
+				if (kDown & KEY_DOWN) sDirection = DOWN;
+			}
+			else
+			{
+				if (kDown & KEY_A) gameReset();
+			}
 		}
-		else if (gameOver)
+		
+		if (gameOver)
 		{
 			sDirection = -1;
 		}
