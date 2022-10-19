@@ -20,5 +20,6 @@
 #define LEFT 2
 #define UP 3
 #define DOWN 4
+#define NONE = 0
 
 #endif

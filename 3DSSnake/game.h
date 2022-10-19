@@ -4,9 +4,14 @@
 
 #include "common.h"
 
+void gameInit();
+void gameRender();
+void gameExit();
+void gameReset();
 void initGrid(int, int);
 void drawGrid();
 void drawGridUnit(int, int);
 void drawSnake();
+void drawGameOver();
 
 #endif

@@ -6,6 +6,7 @@ u32 COLOR_RED = C2D_Color32(0xFF, 0x00, 0x00, 0xFF);
 u32 kDownOld = 0;
 extern short sDirection;
 int frame = 0;
+bool gameOver = false;
 
 void render(void)
 {
@@ -13,8 +14,13 @@ void render(void)
 	C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
 	C2D_TargetClear(top, COLOR_CLEAR);
 	C2D_SceneBegin(top);
+	gameRender(); // call the render method in game.cpp, used for updating lerp
 	drawGrid();
 	drawSnake();
+	if (gameOver)
+	{
+		drawGameOver();
+	}
 	C3D_FrameEnd(0);
 }
 
@@ -31,6 +37,9 @@ int main(void)
 	C2D_Init(C2D_DEFAULT_MAX_OBJECTS);
 	C2D_Prepare();
 	consoleInit(GFX_BOTTOM, NULL);
+
+	// init game.cpp
+	gameInit();
 
 	// Init grid
 	initGrid(COLUMNS, ROWS);
@@ -50,12 +59,16 @@ int main(void)
 		if (kDown & KEY_START)
 			break; // break in order to return to hbmenu
 
-		if (kDown != kDownOld)
+		if (kDown != kDownOld && !gameOver)
 		{
 			if (kDown & KEY_RIGHT) sDirection = RIGHT;
 			if (kDown & KEY_LEFT) sDirection = LEFT;
 			if (kDown & KEY_UP) sDirection = UP;
 			if (kDown & KEY_DOWN) sDirection = DOWN;
+		}
+		else if (gameOver)
+		{
+			sDirection = -1;
 		}
 
 		kDownOld = kDown;
@@ -66,6 +79,7 @@ int main(void)
 		frame++;
 	}
 
+	gameExit();
 	C2D_Fini();
 	C3D_Fini();
 	gfxExit();
