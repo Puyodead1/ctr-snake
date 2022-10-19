@@ -36,4 +36,4 @@ jobs:
       env:
         DEVKITPRO: /opt/devkitpro
         DEVKITARM: /opt/devkitpro/devkitARM
-      run: make
+      run: cd 3DSSnake && make
