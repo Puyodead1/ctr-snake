@@ -137,6 +137,21 @@ void drawSnake()
 	{
 		C2D_DrawRectSolid(snakePos_X[i] * GRID_UNIT_SIZE, snakePos_Y[i] * GRID_UNIT_SIZE, 0.0f, 10, 10, SNAKE_COLOR);
 	}
+
+	for (int i = 1; i < snakeSize; i++)
+	{
+		if (snakePos_X[i] == snakePos_X[0] && snakePos_Y[i] == snakePos_Y[0])
+		{
+			// gameOver = true;
+			int dec = i - 1;
+
+			snakeSize = dec;
+
+			// decrese score by number of body units eaten
+			if (score - dec < 0) score = 0;
+			else score -= dec;
+		}
+	}
 }
 
 void drawGameOver()
