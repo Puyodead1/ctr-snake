@@ -56,6 +56,11 @@ void gameRender()
 	{
 		drawGameOver();
 	}
+
+	consoleClear();
+	printf("\x1b[1;0HSnake Length: %i", snakeSize);
+	printf("\x1b[2;0HScore: %i", score);
+	printf("\x1b[3;0HHigh Score: %i", highScore);
 }
 
 void gameExit()
@@ -88,8 +93,6 @@ void gameReset()
 
 void initGrid(int x, int y)
 {
-	printf("Columns: %i\n", x);
-	printf("Rows: %i\n", y);
 	gridX = x;
 	gridY = y;
 }
@@ -142,14 +145,9 @@ void drawSnake()
 	{
 		if (snakePos_X[i] == snakePos_X[0] && snakePos_Y[i] == snakePos_Y[0])
 		{
-			// gameOver = true;
 			int dec = i - 1;
 
 			snakeSize = dec;
-
-			// decrese score by number of body units eaten
-			if (score - dec < 0) score = 0;
-			else score -= dec;
 		}
 	}
 }
