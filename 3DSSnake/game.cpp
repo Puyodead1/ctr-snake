@@ -57,10 +57,10 @@ void gameRender()
 		drawGameOver();
 	}
 
-	consoleClear();
-	printf("\x1b[1;0HSnake Length: %i", snakeSize);
+	//consoleClear();
+	/*printf("\x1b[1;0HSnake Length: %i", snakeSize);
 	printf("\x1b[2;0HScore: %i", score);
-	printf("\x1b[3;0HHigh Score: %i", highScore);
+	printf("\x1b[3;0HHigh Score: %i", highScore);*/
 }
 
 void gameExit()

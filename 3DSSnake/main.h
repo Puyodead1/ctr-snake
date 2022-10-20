@@ -4,5 +4,6 @@
 
 #include "common.h"
 #include "game.h"
+#include "audio.h"
 
 #endif

@@ -6,6 +6,11 @@ u32 COLOR_RED = C2D_Color32(0xFF, 0x00, 0x00, 0xFF);
 u32 kDownOld = 0;
 extern short sDirection;
 extern bool gameOver;
+extern LightEvent s_event;
+static const char* OPUS_PATH = "romfs:/Auvic_Consumed.opus";
+static const int THREAD_AFFINITY = -1;
+static const int THREAD_STACK_SZ = 32 * 1024;
+extern volatile bool s_quit;
 int frameCount = 0;
 
 void render(void)
@@ -21,11 +26,54 @@ void render(void)
 int main(void)
 {
 	// Initialize stuff
+	romfsInit();
+	ndspInit();
 	gfxInitDefault();
 	C3D_Init(C3D_DEFAULT_CMDBUF_SIZE);
 	C2D_Init(C2D_DEFAULT_MAX_OBJECTS);
 	C2D_Prepare();
 	consoleInit(GFX_BOTTOM, NULL);
+	osSetSpeedupEnable(true);
+	LightEvent_Init(&s_event, RESET_ONESHOT);
+
+	int error = 0;
+	OggOpusFile* opusFile = op_open_file(OPUS_PATH, &error);
+	if (error) {
+		printf("Failed to open file: error %d (%s)\n", error,
+			opusStrError(error));
+	}
+
+	// Attempt audioInit
+	if (!audioInit()) {
+		printf("Failed to initialise audio\n");
+
+		C2D_Fini();
+		C3D_Fini();
+		gfxExit();
+		ndspExit();
+		romfsExit();
+		return EXIT_FAILURE;
+	}
+
+	// Set the ndsp sound frame callback which signals our audioThread
+	ndspSetCallback(audioCallback, NULL);
+
+	// Spawn audio thread
+
+	// Set the thread priority to the main thread's priority ...
+	int32_t priority = 0x30;
+	svcGetThreadPriority(&priority, CUR_THREAD_HANDLE);
+	// ... then subtract 1, as lower number => higher actual priority ...
+	priority -= 1;
+	// ... finally, clamp it between 0x18 and 0x3F to guarantee that it's valid.
+	priority = priority < 0x18 ? 0x18 : priority;
+	priority = priority > 0x3F ? 0x3F : priority;
+
+	// Start the thread, passing our opusFile as an argument.
+	const Thread threadId = threadCreate(audioThread, opusFile,
+		THREAD_STACK_SZ, priority,
+		THREAD_AFFINITY, false);
+	printf("Created audio thread %p\n", threadId);
 
 	// init game.cpp
 	gameInit();
@@ -76,9 +124,23 @@ int main(void)
 		frameCount++;
 	}
 
+	// Signal audio thread to quit
+	s_quit = true;
+	LightEvent_Signal(&s_event);
+
+	// Free the audio thread
+	threadJoin(threadId, UINT64_MAX);
+	threadFree(threadId);
+
+	// Cleanup audio things and de-init platform features
+	audioExit();
+	ndspExit();
+	op_free(opusFile);
+
 	gameExit();
 	C2D_Fini();
 	C3D_Fini();
+	romfsExit();
 	gfxExit();
-	return 0;
+	return EXIT_SUCCESS;
 }
