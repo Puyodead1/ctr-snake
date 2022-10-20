@@ -15,7 +15,7 @@
 #define ROWS SCREEN_HEIGHT / GRID_UNIT_SIZE // x
 #define COLUMNS SCREEN_WIDTH / GRID_UNIT_SIZE // y
 #define FPS 100000 // ~10 fps
-#define SNAKE_MAX 60
+#define SNAKE_MAX_SIZE 60
 
 #define RIGHT 1
 #define LEFT 2

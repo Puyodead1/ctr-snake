@@ -1,7 +1,7 @@
 #include "game.h"
 
 int gridX, gridY;
-int snakePos_X[SNAKE_MAX], snakePos_Y[SNAKE_MAX];
+int snakePos_X[SNAKE_MAX_SIZE], snakePos_Y[SNAKE_MAX_SIZE];
 int snakeSize = 5;
 int foodX, foodY;
 int score = 0, highScore = 0;
@@ -70,19 +70,20 @@ void gameReset()
 	lerpT = 0.7f;
 	step = 0.05f;
 
-	// reset snake position
-	for (int i = 0; i < snakeSize; i++)
-	{
-		snakePos_X[i] = 200 / GRID_UNIT_SIZE;
-		snakePos_Y[i] = (120 - (GRID_UNIT_SIZE * i)) / GRID_UNIT_SIZE;
-	}
-
 	gameOver = false;
 	sDirection = RIGHT;
 
 	foodEaten = true;
 
 	score = 0;
+	snakeSize = 5;
+
+	// reset snake position
+	for (int i = 0; i < snakeSize; i++)
+	{
+		snakePos_X[i] = 200 / GRID_UNIT_SIZE;
+		snakePos_Y[i] = (120 - (GRID_UNIT_SIZE * i)) / GRID_UNIT_SIZE;
+	}
 }
 
 void initGrid(int x, int y)
@@ -204,5 +205,7 @@ void checkBounds()
 	{
 		foodEaten = true;
 		score++;
+		if (snakeSize + 1 >= SNAKE_MAX_SIZE) snakeSize = SNAKE_MAX_SIZE;
+		else snakeSize++;
 	}
 }
